@@ -13,13 +13,20 @@ import {
 } from "@/components/ui/popover";
 import { ModeToggle } from "./ModeToggler";
 import { Link } from "react-router";
-import { authApi, useLogoutMutation, useUserInfoQuery } from "@/redux/features/auth/auth.api";
+import {
+  authApi,
+  useLogoutMutation,
+  useUserInfoQuery,
+} from "@/redux/features/auth/auth.api";
 import { useAppDispatch } from "@/redux/hook";
+import { role } from "@/constants/role";
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
-  { href: "/", label: "Home", active: true },
-  { href: "/about", label: "About" },
+  { href: "/", label: "Home", role: "PUBLIC" },
+  { href: "/about", label: "About", role: "PUBLIC" },
+  { href: "/admin", label: "Dashboard", role: role.admin },
+  { href: "/user", label: "Dashboard", role: role.user },
 ];
 
 export default function Navbar() {
@@ -29,9 +36,9 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     logout(undefined);
-    // dispatch({ type: "auth/logout" }); 
-    dispatch(authApi.util.resetApiState()); 
-  }
+    // dispatch({ type: "auth/logout" });
+    dispatch(authApi.util.resetApiState());
+  };
 
   return (
     <header className="border-b ">
