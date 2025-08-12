@@ -11,7 +11,8 @@ import { Input } from "@/components/ui/input";
 import config from "@/config";
 import { cn } from "@/lib/utils";
 import { useLoginMutation } from "@/redux/features/auth/auth.api";
-import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
+import type { ILogin, IResponse } from "@/types";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -20,24 +21,21 @@ export function LoginForm({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   const navigate = useNavigate();
-  const form = useForm();
+  const form = useForm<ILogin>();
   const [login] = useLoginMutation();
 
-    const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+  const onSubmit: SubmitHandler<ILogin> = async (data) => {
     try {
-      const res = await login(data).unwrap();
+      const res = (await login(data).unwrap()) as unknown as IResponse<ILogin>;
 
       if (res.success) {
         toast.success(res.message || "Login successful");
         navigate("/");
       }
-
-    } catch (err) {
-      console.error("Form LoginForm 35",err);
-
-      if (err.data.message === "Password does not match") {
-        toast.error("Invalid credentials");
-      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      console.log("Form LoginForm 40", err);
+      toast.error(err.data.message || "Login failed");
 
       if (err.data.message === "User is not verified") {
         toast.error("Your account is not verified");
@@ -107,7 +105,7 @@ export function LoginForm({
         </div>
 
         <Button
-        onClick={()=>window.open(`${config.baseUrl}/auth/google`, "_self")}
+          onClick={() => window.open(`${config.baseUrl}/auth/google`, "_self")}
           type="button"
           variant="outline"
           className="w-full cursor-pointer"

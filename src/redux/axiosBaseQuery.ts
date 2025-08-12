@@ -26,10 +26,19 @@ const axiosBaseQuery =
       return { data: result.data };
     } catch (axiosError) {
       const err = axiosError as AxiosError;
+
+      // Default friendly message
+      let friendlyMessage = "An unexpected error occurred";
+
+      // Handle no connection to server
+      if (err.code === "ERR_NETWORK") {
+        friendlyMessage = "Cannot connect to the server. Please check your connection.";
+      }
+
       return {
         error: {
-          status: err.response?.status,
-          data: err.response?.data || err.message,
+          status: err.response?.status || "FETCH_ERROR",
+          data: err.response?.data || friendlyMessage,
         },
       };
     }

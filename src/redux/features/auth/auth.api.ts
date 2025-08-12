@@ -3,12 +3,13 @@ import type { ILogin, IResponse, ISendOtp, IVerifyOtp } from "@/types";
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    login: builder.mutation<null, ILogin>({
+    login: builder.mutation<ILogin, ILogin>({
       query: (userinfo) => ({
         url: "/auth/login",
         method: "POST",
-        // body: userinfo,
-        data: userinfo, // for axiosBaseQuery
+        // body: userinfo, // for fetchBaseQuery
+        // For axiosBaseQuery, use data instead of body
+        data: userinfo, 
       }),
     }),
     logout: builder.mutation({
