@@ -29,7 +29,7 @@ export default function HeroSection() {
   );
 
   if(divisionIsLoading){
-    return <h1>Loadng..</h1>
+    return <h1>Loadng...</h1>
   }
 
   return (

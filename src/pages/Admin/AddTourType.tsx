@@ -10,15 +10,28 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
   useGetTourTypesQuery,
   useRemoveTourTypeMutation,
 } from "@/redux/features/tour/tour.api";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useState } from "react";
 
 export default function AddTourType() {
-  const { data } = useGetTourTypesQuery(undefined);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(2);
+  const { data } = useGetTourTypesQuery({ page: currentPage, limit });
   const [removeTourType] = useRemoveTourTypeMutation();
+  const totalPage = data?.meta?.totalPage || 1;
 
   const handleRemoveTourType = async (tourTypeId: string) => {
     const toastId = toast.loading("Removing...");
@@ -46,7 +59,7 @@ export default function AddTourType() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data?.map((item: { _id: string; name: string }) => (
+            {data?.data?.map((item: { _id: string; name: string }) => (
               <TableRow>
                 <TableCell className="font-medium w-full">
                   {item?.name}
@@ -65,6 +78,48 @@ export default function AddTourType() {
           </TableBody>
         </Table>
       </div>
+      {totalPage > 1 && (
+        <div className="flex justify-end mt-5">
+          <div>
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => setCurrentPage((prev) => prev - 1)}
+                    className={
+                      currentPage === 1
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
+                  />
+                </PaginationItem>
+                {Array.from({ length: totalPage }, (_, index) => index + 1).map(
+                  (pageNumber) => (
+                    <PaginationItem
+                      key={pageNumber}
+                      onClick={() => setCurrentPage(pageNumber)}
+                    >
+                      <PaginationLink isActive={currentPage === pageNumber}>
+                        {pageNumber}
+                      </PaginationLink>
+                    </PaginationItem>
+                  )
+                )}
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() => setCurrentPage((prev) => prev + 1)}
+                    className={
+                      currentPage === totalPage
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
