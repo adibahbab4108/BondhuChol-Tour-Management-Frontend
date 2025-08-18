@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,6 +22,10 @@ import { useAddTourTypeMutation } from "@/redux/features/tour/tour.api";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+interface Idata {
+  name: string;
+}
+
 export function AddTourTypeModal() {
   const form = useForm({
     defaultValues: {
@@ -30,7 +35,8 @@ export function AddTourTypeModal() {
 
   const [addTourType, { isLoading }] = useAddTourTypeMutation();
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: Idata) => {
+  
     try {
       const res = await addTourType({ name: data.name }).unwrap();
       if (res.success) {
@@ -39,7 +45,7 @@ export function AddTourTypeModal() {
       } else {
         toast.error(res.message || "Failed to add tour type");
       }
-    } catch (err) {
+    } catch (err:any) {
       toast.error(err?.data?.message || "An error occurred");
     }
   };
@@ -78,11 +84,7 @@ export function AddTourTypeModal() {
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button
-            type="submit"
-            form="add-tour-type"
-            disabled={isLoading}
-          >
+          <Button type="submit" form="add-tour-type" disabled={isLoading}>
             {isLoading ? "Saving..." : "Save changes"}
           </Button>
         </DialogFooter>

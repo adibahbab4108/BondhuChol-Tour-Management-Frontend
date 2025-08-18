@@ -6,6 +6,6 @@ export const baseApi = createApi({
   reducerPath: "baseApi",
   // baseQuery:fetchBaseQuery({baseUrl: "http://localhost:5000/api/v1",credentials:"include"}), //payload will be passed by body
   baseQuery: axiosBaseQuery(), //payload will be passed by data
-  tagTypes: ["USER","TOUR"],
+  tagTypes: ["USER","TOUR","DIVISION","BOOKING"],
   endpoints: () => ({}),
 });
