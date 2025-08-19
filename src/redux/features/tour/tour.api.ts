@@ -45,7 +45,7 @@ export const tourApi = baseApi.injectEndpoints({
         params
       }),
       providesTags: ["TOUR"],
-      transformResponse: (response) => response.data, // taking only data from response
+      transformResponse: (response) => response.data
     }),
   }),
 });

@@ -23,8 +23,7 @@ export default function TourFilters() {
     useGetDivisionQuery(undefined);
 
   const { data: tourTypeData, isLoading: tourTypeIsLoading } =
-    useGetTourTypesQuery({ limit: 1000, fields: "_id,name" });
-
+    useGetTourTypesQuery({ limit: 1000, fields: "_id, name" });
   const divisionOption = divisionData?.map(
     (item: { _id: string; name: string }) => ({
       label: item.name,
@@ -32,13 +31,13 @@ export default function TourFilters() {
     })
   );
 
-  const tourTypeOptions = tourTypeData?.map(
+  const tourTypeOptions = tourTypeData?.data?.map(
     (item: { _id: string; name: string }) => ({
       label: item.name,
       value: item._id,
     })
   );
-console.log(tourTypeData, tourTypeOptions)
+
   const handleDivisionChange = (value: string) => {
     const params = new URLSearchParams(searchParams);
     params.set("division", value);
